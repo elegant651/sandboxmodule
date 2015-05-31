@@ -1,0 +1,62 @@
+
+<polymer-element name="page-indicator" attributes="type color curIdx numSize" horizontal layout>
+<template>
+	<style>
+		.circle {
+			width: 8px;
+			height: 8px;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+			background: rgba(230,230,230,1);
+			margin-right: 12px;
+		}
+
+		.rect {
+			width: 8px;
+			height: 8px;
+			background: rgba(230,230,230,1);
+		}
+
+		.current {
+			background: rgba(140,185,0,1);
+		}
+	</style>
+	<template repeat="{{indic in colIndicates}}">
+		<template if="{{indic.isCur}}">			
+			<div class="circle current"></div>
+		</template>
+		<template if="{{!indic.isCur}}">
+			<div class="circle"></div>
+		</template>
+	</template>
+</template>
+<script>
+	Polymer('page-indicator', {
+		colIndicates: [],
+		numSize: 1,
+		curIdx: 0,
+
+		created: function() {
+			this.colIndicates = [];
+		},
+
+		domReady: function() {
+			this.initIndicators();
+		},
+
+		initIndicators: function() {
+			this.colIndicates = new Array(this.numSize);
+			for(var i=0; i < this.colIndicates.length; i++){
+				var isCur = false;
+				if(i==this.curIdx) isCur = true;
+				this.colIndicates[i] = {"idx": i, "isCur": isCur};
+			}
+		},
+
+		curIdxChanged: function() {
+			this.initIndicators();
+		}
+	});
+</script>
+</polymer-element>

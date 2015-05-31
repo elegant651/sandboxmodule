@@ -1,0 +1,140 @@
+<link rel="import" href="../bower_components/core-image/core-image.html">
+<link rel="import" href="../bower_components/core-animation/core-animation.html">
+<link rel="import" href="../bower_components/core-icon/core-icon.html">
+<link rel="import" href="oreesh-button.html">
+
+<polymer-element name="slider-popup" attributes="targetImg" vertical layout>
+<template>
+	<style>		
+		#btnToggle {
+			position: absolute;
+			right: 521px;
+			top: 100px;			
+			z-index: 25000;
+		}
+
+		#mainPanel {
+			position: absolute;
+			right: 0px;
+			top: 66px;
+			width: 520px;
+			height: {{windowHeight-48}}px;
+			background-color: #fff;
+			border: 1px solid rgba(220,220,220,1);
+			box-shadow: -5px 0px 5px 0px rgba(0,0,0,0.3);
+			z-index: 20100;
+		}
+
+		#imgTarget {
+			width: 520px;
+			height: 480px;
+		}
+
+		.panelBtns {
+			position: absolute;
+			bottom: 20px;
+			left: 50%;
+
+			margin-left: -256px;
+		}		
+
+		#btnShare {
+			background: rgba(255,255,255,1);
+			width: 248px;
+			height: 60px;
+			margin-left: 12px;
+			margin-right: 8px;
+			font-size: 14px;		
+			color: rgba(102,102,102,1);	
+			line-height: 22px;
+			box-shadow: 0px 2px 0px 0px rgba(102,102,102,1);
+		}
+
+		#btnDemo {
+			width: 240px;
+			height: 60px;
+			margin-right: 10px;
+			line-height: 22px;
+			box-shadow: 0px 2px 0px 0px rgb(125, 160, 0);
+		}
+
+		core-icon {
+			margin-top: 19px;
+			margin-left: 18px;
+			margin-right: 13px;
+		}
+
+	</style>
+	<core-image id="btnToggle" on-tap="{{toggleHandler}}" src="../images/{{toggle_img}}"></core-image>
+	<div id="mainPanel" vertical layout>
+		<core-image id="imgTarget" src="{{targetImg}}"></core-image>
+		<div class="panelBtns" horizontal layout center-justified>
+			<oreesh-button id="btnShare" on-tap="{{tapShareHandler}}"><div horizontal layout><core-icon src="../images/button_icon_share.png"></core-icon><div style="margin-top:21px;">Button1</div></div></oreesh-button>
+			<a href="http://elegantuniv.com" target="_blank"><oreesh-button id="btnDemo"><div center horizontal layout><core-icon src="../images/button_icon_demo.png"></core-icon><div style="margin-top:21px; margin-left: 13px;">Button2</div></div></oreesh-button></a>
+		</div>		
+	</div>
+	
+</template>
+<script>
+	Polymer('slider-popup', {		
+		targetImg: null,
+		player: false,
+		is_opened: false,
+		toggle_img: "popup_arrow_open.png",
+		windowHeight: 700,
+
+		created: function() {
+			this.targetImg = null;
+			var that = this;
+			this.windowHeight = window.innerHeight;
+			window.addEventListener("resize", function(){
+				that.windowHeight = window.innerHeight;
+			});
+		},
+
+		fireToggleChanged: function() {						
+			this.toggleHandler();		
+		},
+
+		toggleHandler: function() {			
+			var that = this;
+			if(this.player) {
+				this.player.cancel();
+			}
+
+			this.$.btnToggle.setAttribute("hidden", null);
+			var animation = new CoreAnimation();			
+			animation.addEventListener("core-animation-finish", function() {
+				that.$.btnToggle.removeAttribute("hidden");
+				if(that.is_opened){					
+					that.toggle_img = "popup_arrow_close.png";
+					that.$.btnToggle.style.right = "0px";					
+				} else {
+					that.toggle_img = "popup_arrow_open.png";
+					that.$.btnToggle.style.right = "521px";
+				}				
+			});
+			animation.duration = 400;
+			animation.easing = "ease-in-out";
+			animation.keyframes = [
+				{right: "0px"},
+				{right: "-520px"}
+			];
+			animation.fill = "forwards";
+			if(this.is_opened){
+				animation.direction = "reverse";
+				this.is_opened = false;
+			} else {
+				animation.direction = "normal";
+				this.is_opened = true;
+			}						
+			animation.target = this.$.mainPanel;
+			this.player = animation.play();			
+		},
+
+		tapShareHandler: function() {
+			this.fire('tap-sharebtn');
+		}
+	});
+</script>
+</polymer-element>

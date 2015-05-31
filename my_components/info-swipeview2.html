@@ -1,0 +1,149 @@
+<link rel="import" href="../bower_components/core-image/core-image.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="../bower_components/core-animated-pages/core-animated-pages.html">
+<link rel="import" href="../bower_components/core-animated-pages/transitions/slide-from-right.html">
+<link rel="import" href="page-indicator.html">
+<link rel="import" href="oreesh-button.html">
+
+<polymer-element name="info-swipeview2" attributes="intros img_path" vertical layout>
+<template>
+	<style>
+		:host {
+			width: 860px;
+			height: 610px;
+			background-color: #fff;
+			border: 2px solid rgba(230,230,230,0.3);		
+			border-radius: 10px;				
+			box-shadow: 10px 20px 15px 0px rgba(0, 0, 0, 0.2);
+			z-index: 20100;
+		}
+
+		core-animated-pages {			
+			width: 100%;
+			height: 540px;			
+			overflow: hidden;
+		}		
+
+		.panel {
+			width: 100%;
+			height: 230px;
+		}
+
+		.title {
+			text-align: center;
+			margin: 0 auto;		
+			margin-top: 50px;			
+			font-size: 26px;
+			color: rgba(77,77,77,1);
+		}
+
+		.content {			
+			width: 590px;
+			margin: 0 auto;
+			margin-top: 30px;
+			margin-bottom: 70px;
+			text-align: center;
+			font-size: 16px;
+			color: rgba(120,120,120,1);
+			line-height: 30px;
+		}		
+
+		page-indicator {		
+			margin-top: 15px;
+  			margin-left: 365px;
+		}
+
+		#cibLeft {
+			position: absolute;
+			color: rgba(200,200,200,1);
+			top: 550px;
+			left: 10px;						
+		}		
+
+		#cibLeft:hover {
+			color: rgba(140,185,0,1);
+		}
+
+		#cibRight {
+			position: absolute;
+			color: rgba(200,200,200,1);
+			top: 550px;
+			right: 10px;									
+		}		
+
+		#cibRight:hover {
+			color: rgba(140,185,0,1);
+		}
+
+		#btn_next {			
+			position: absolute;
+			top: 555px;
+			right: 30px;
+
+			width: 120px;
+			height: 36px;			
+			line-height: 40px;
+		}
+	</style>
+	<core-animated-pages id="cp" selected="0" transitions="slide-from-right">
+		<template repeat="{{intro in intros}}">
+			<section>
+				<div center-justified vertical layout>
+					<core-image src="{{intro.img}}" ></core-image>
+				</div>	
+			</section>	
+		</template>
+	</core-animated-pages>
+
+	<div horizontal layout>
+		<core-icon-button id="cibLeft" icon="chevron-left" on-click="{{onPrev}}"></core-icon-button>
+		<page-indicator numSize="{{numSize}}" curIdx="{{curIdx}}"></page-indicator>		
+		<oreesh-button id="btn_next" on-click="{{onClickBtn}}" hidden>Next</oreesh-button>
+		<core-icon-button id="cibRight" icon="chevron-right" on-click="{{onNext}}"></core-icon-button>
+	</div>
+</template>
+<script>
+	Polymer('info-swipeview2', {
+		curIdx: 0,
+		numSize: 1,
+		intros: [],
+
+		created: function() {			
+			
+		},						
+
+		onPrev: function() {
+			var childrenSize = this.$.cp.children.length;
+			if(this.$.cp.selected == 0){
+				return;
+			}
+
+			this.$.cp.selected = (this.$.cp.selected - 1) % childrenSize;
+			this.curIdx = this.$.cp.selected;
+
+			this.$.btn_next.setAttribute("hidden", null);
+			this.$.cibRight.removeAttribute("hidden", null);
+		},
+
+		onNext: function() {			
+			var childrenSize = this.$.cp.children.length;						
+			if(this.$.cp.selected+1 == this.numSize) {											
+				return;
+			}
+
+			this.$.cp.selected = (this.$.cp.selected + 1) % childrenSize;			
+			this.curIdx = this.$.cp.selected;
+
+			if(this.$.cp.selected+1 == this.numSize){		
+				this.$.cibRight.setAttribute("hidden", null);
+				this.$.btn_next.removeAttribute("hidden");
+				this.$.btn_next.innerHTML = "Let's play";
+			}			
+		},
+
+		onClickBtn: function() {
+			this.fire('finish-next');
+		}
+	});
+</script>
+</polymer-element>

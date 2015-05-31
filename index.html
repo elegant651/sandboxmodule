@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>	
+	<head>
+		<title>TestBed</title>
+		<script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+		<link rel="import" href="bower_components/polymer/polymer.html">
+		<link rel="import" href="my_components/info-swipeview2.html">
+		<link rel="import" href="my_components/msg-header.html">		
+		<link rel="import" href="my_components/page-indicator.html">
+		<link rel="import" href="my_components/invite-popup.html">
+		<link rel="import" href="my_components/slider-popup.html">
+		<style shim-shadowdom>
+			html, body {
+				height: 100%;
+				margin: 0;					
+			}
+
+			.main {
+				width: 100%;
+				height: 1024px;								
+				background-color: rgba(0, 0, 0, 0.3);		
+			}
+
+			info-swipeview2 {				
+				margin: 0 auto;
+				margin-top: 100px;
+			}
+		</style>
+	</head>
+	<body unresolved>
+		<template id="temp_app" is="auto-binding">
+			<div vertical layout>
+				<msg-header msg="Test"></msg-header>				
+				<div class="main">
+					<!-- <info-swipeview2 intros="{{intros}}"></info-swipeview2>					 -->
+					<!-- <invite-popup></invite-popup> -->
+					<!-- <page-indicator numSize="5" curIdx="0"></page-indicator> -->
+					<slider-popup targetImg="../images/dtest.png"></slider-popup>
+				</div>
+			</div>
+		</template>
+		<script src="my_components/data.js"></script>
+	</body>
+</html>

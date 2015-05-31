@@ -1,0 +1,321 @@
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="oreesh-button.html">
+
+<polymer-element name="invite-popup" attributes="popupTitle sendUrl">
+	<template>
+		
+		<style>
+			.popup {
+				position: fixed;
+				left: 50%;
+				top: 50%;
+				margin-left: -208px;
+				margin-top: -117px;
+				width: 438px;
+				height: 330px;
+				z-index: 20100;
+				border-radius: 10px;
+				box-shadow: 10px 20px 15px 0px rgba(0, 0, 0, 0.2);
+			}
+			.popup .close {
+				width: 19px;
+				height: 19px;
+				position: absolute;
+				right: 8px;
+				top: 8px;
+				cursor: pointer;
+				background-image: url('../images/bt_close_pop_nor.png');
+				z-index: 1;
+			}
+			.popup .close:hover {
+				background-image: url('../images/bt_close_pop_fc.png');
+			}
+			.popup h1 {
+				padding-left: 24px;
+				line-height: 60px;
+				font-size: 18px;
+				color: rgb(255, 255, 255);
+				background-color: rgb(51, 51, 51);
+				border-radius: 10px 10px 0px 0px; 	
+				margin: 0;
+			}
+			.popup .contents {
+				padding-bottom: 25px;
+				background-color: rgb(255, 255, 255);
+				border-radius: 0px 0px 10px 10px;				
+			}
+			.popup .mainLine {								
+				text-align: center;
+			}
+		
+			.popup .mainLine .content {
+				display: inline-block;				
+				width: 372px;
+				margin-top: 20px;
+				margin-bottom: 20px;
+				margin-left: 7px;
+				line-height: 20px;
+				font-size: 16px;
+				text-align: left;
+				color: rgb(70, 70, 70);				
+			}
+
+			.popup .mainLine input {
+				width: 360px;
+				height: 36px;		
+				margin-top: 8px;
+				margin-bottom: 8px;		
+				background-color: #f0f0f0;
+				padding: 5px 10px;
+				border: none;
+  				box-shadow: inset 0 1px 1px 0 #ccc;
+  				border-radius: 5px;
+  				color: #515151;
+			}
+
+			.popup .mainLine input:focus {
+				box-shadow: 0 0 0 2px #a5cd0a;
+			  	outline: 0;
+			  	background-color: #fff;
+			  	color: #515151;
+			}
+
+			#ipEmail.wrong {
+				box-shadow: 0 0 0 2px rgba(255,145,10,1);
+			}
+
+			#msgValid {								
+				margin-left : -190px;				
+				font-size:  12px;
+				color: rgba(255,145,10,1);				
+			}
+			
+			.popup .buttonLine {
+				height: 36px;
+				line-height: 36px;
+				margin-top: 12px;
+				margin-right: 15px;
+				text-align: right;
+			}
+			
+			oreesh-button {
+				width: 111px;
+				height: 36px;				
+				margin-right: 15px;
+			}
+
+			.common.wait {
+				pointer-events: none;
+				background-color: rgba(135, 175, 0, 1);			
+				box-shadow: 0px 0px 0px 0px rgb(125, 160, 0), 0px 0px 0px 0px rgba(0, 0, 0, 0.1);
+				margin-top: 3px;
+			}
+
+			.Vulture {
+				display: inline-block;
+				vertical-align: top;				
+			}
+
+			.Vulture .popupv {
+				position: absolute;
+				bottom: 100%;
+				left: 50%;				
+
+				vertical-align: middle;
+
+				width: 80px;
+  				height: 15px;
+				margin-left: 80px;
+  				margin-bottom: -273px;
+				line-height: 0px;
+				max-width: 152px;
+				min-height: 6px;
+
+				padding: 10px;
+
+				background-color: rgb(86, 83, 83);
+
+				z-index: 10000;
+
+				transition: opacity 0s;
+				opacity: 1;
+			}
+
+			.Vulture .popupv.fadeout {
+				transition: opacity 2s;
+				opacity: 0;
+			}
+
+			.Vulture .popupv:after {
+				content: "";
+
+				position: absolute;
+				bottom: -10px;
+				left: 50%;
+
+				margin-left: -5px;
+
+				border-top: 5px solid rgb(86, 83, 83);
+				border-left: 5px solid rgb(86, 83, 83);
+				border-right: 5px solid transparent;
+				border-bottom: 5px solid transparent;
+			}
+
+			.Vulture .popupv .content {
+				display: inline-block;
+				line-height: 0px;
+				vertical-align: middle;
+				font-size: 12px;
+				font-weight: bold;
+				color: rgb(255, 255, 255);
+			}
+
+
+		</style>
+		<div class="popup">
+			<div class="close" on-tap="{{endCallback}}"></div>
+			<div>
+				<h1>{{popupTitle}}</h1>
+				<div class="contents">
+					<div class="mainLine">
+						<div class="content">
+							Know someone that would find KnowRe useful? <br />
+							Send them an invite to learn more about KnowRe.
+						</div>
+						<div layout center vertical>
+							<input id="ipEmail" type="email" class="common email" placeholder="Enter friend's email" />
+							<div id="msgValid" hidden>Please enter a valid email address</div>
+							<input id="ipName" type="text" class="common name" placeholder="What is your name?" />
+						</div>
+					</div>					
+					
+					<div class="buttonLine">
+						<div class="Vulture">
+							<div id="popupv" class="popupv" hidden>
+								<p class="content">Invitation sent</p>								
+							</div>						
+							<oreesh-button id="btnInvite" on-tap="{{sendInvite}}" disabled>Send Invite</oreesh-button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>		
+		<<core-ajax		    
+			id="caUrl"
+		    url="{{sendUrl}}"		    
+		    method="POST"
+		    handleAs="json"
+		    contentType="application/json"
+		    body="{{sendItem}}"		    
+		    on-core-response="{{handleResponse}}"
+		    on-core-error="{{handleError}}"></core-ajax>
+	</template>
+		
+	<script>
+		Polymer({			
+			sendUrl: "",
+			rightEmail: false,
+			rightName: false,
+			sendItem: {},			
+
+			publish: {
+				popupTitle: 'Share link to KnowRe Playground'								
+			},
+
+			domReady: function() {
+				var that = this;
+				this.$.ipEmail.focus();				
+				this.$.ipEmail.addEventListener("focusout", function() {
+					that.checkEmail();
+					that.isCanSend();
+				});
+
+				// this.$.ipEmail.addEventListener("keyup", function() {
+				// 	that.checkEmail();
+				// 	that.isCanSend();
+				// });
+
+				this.$.ipName.addEventListener("keyup", function() {					
+					if(that.$.ipName.value!=""){						
+						that.rightName = true;
+					} else {
+						that.rightName = false;
+					}
+					that.isCanSend();
+				});				
+			},
+
+			initialize: function() {
+				this.$.ipEmail.value = "";
+				this.$.ipEmail.className = "common email";				
+				this.$.ipName.value = "";
+				this.$.btnInvite.className = "";
+				this.$.btnInvite.removeAttribute("disabled");	
+				this.$.popupv.setAttribute("hidden", null);		
+				this.$.popupv.className = "popupv";
+				this.$.popupv.style.opacity = 1;
+			},
+
+			checkEmail: function() {
+				var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+				if(!regex.test(this.$.ipEmail.value)){
+					this.$.msgValid.removeAttribute("hidden");
+					this.$.ipEmail.className = "common email wrong";						
+					this.rightEmail = false;
+				} else {
+					this.$.msgValid.setAttribute("hidden", null);
+					this.$.ipEmail.className = "common email";		
+					this.rightEmail = true;				
+				}
+			},
+
+			isCanSend: function() {
+				if(this.rightEmail && this.rightName) {
+					this.$.btnInvite.className = "common yes";
+					this.$.btnInvite.removeAttribute("disabled");
+				} else {
+					this.$.btnInvite.className = "common no";
+					this.$.btnInvite.setAttribute("disabled", true);
+				}
+			},
+
+			sendInvite: function() {				
+				if(this.rightEmail && this.rightName) {					
+					this.$.btnInvite.className = "common wait";
+					this.sendItem = JSON.stringify({'email': this.$.ipEmail.value, 'name': this.$.ipName.value});
+					this.$.caUrl.go();																	
+				}
+			},
+
+			handleResponse: function(event, response) {
+				if(response!=null){
+					var that = this;
+
+					this.$.btnInvite.className = "common ok";
+					this.$.btnInvite.setAttribute("disabled", true);
+					this.$.popupv.removeAttribute("hidden");
+					setTimeout(function(){
+						that.$.popupv.style.transition = 'opacity 2s linear 0s';
+						that.$.popupv.style.opacity = 0;
+					}, 1000);
+					console.log("complete:"+response);
+
+					setTimeout(function(){
+						that.initialize();
+					}, 3200);
+				}
+			},
+
+			handleError: function(event, response) {
+				console.log("e:"+response);
+				this.$.btnInvite.className = "common ok";
+				this.$.btnInvite.removeAttribute("disabled");
+			},
+
+			endCallback: function() {	
+				this.initialize();
+				this.fire('popup-close');
+			}
+		});
+	</script>
+</polymer-element>

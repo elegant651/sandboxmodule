@@ -1,0 +1,114 @@
+<link rel="import" href="../bower_components/core-image/core-image.html">
+<link rel="import" href="../bower_components/core-animated-pages/core-animated-pages.html">
+<link rel="import" href="../bower_components/core-animated-pages/transitions/slide-from-right.html">
+<link rel="import" href="page-indicator.html">
+<link rel="import" href="oreesh-button.html">
+
+<polymer-element name="info-swipeview" attributes="intros" vertical layout>
+<template>
+	<style>
+		:host {
+			width: 740px;
+			height: 610px;
+			background-color: #fff;
+			border: 2px solid rgba(230,230,230,0.3);		
+			border-radius: 10px;				
+			box-shadow: 10px 20px 15px 0px rgba(0, 0, 0, 0.2);
+			z-index: 20100;
+		}
+
+		core-animated-pages {			
+			width: 100%;
+			height: 540px;			
+			overflow: hidden;
+		}		
+
+		.panel {
+			width: 100%;
+			height: 230px;
+		}
+
+		.title {
+			text-align: center;
+			margin: 0 auto;		
+			margin-top: 50px;			
+			font-size: 26px;
+			color: rgba(77,77,77,1);
+		}
+
+		.content {			
+			width: 570px;
+			margin: 0 auto;
+			margin-top: 30px;
+			margin-bottom: 70px;
+			text-align: center;
+			font-size: 16px;
+			color: rgba(120,120,120,1);
+			line-height: 30px;
+		}		
+
+		page-indicator {		
+			margin-top: 10px;	
+			margin-left: 350px;			
+		}
+
+		#btn_next {
+			position: relative;
+			width: 120px;
+			height: 36px;
+			margin-left: 600px;
+			margin-top: -30px;
+			line-height: 40px;
+		}
+	</style>
+	<core-animated-pages id="cp" selected="0" transitions="slide-from-right">
+		<template repeat="{{intro in intros}}">
+			<section>
+				<div center-justified vertical layout>
+					<core-image src="../images/{{intro.img}}" style="width: 740px; height:310px;" sizing="cover"></core-image>
+					<div class="panel">
+						<div class="title">{{intro.title}}</div>				
+						<div class="content">{{intro.content}}</div>				
+					</div>
+				</div>	
+			</section>	
+		</template>
+	</core-animated-pages>
+
+	<div>
+		<page-indicator numSize="{{numSize}}" curIdx="{{curIdx}}"></page-indicator>		
+		<oreesh-button id="btn_next" on-click="{{onNext}}">Next</oreesh-button>
+	</div>
+</template>
+<script>
+	Polymer('info-swipeview', {
+		curIdx: 0,
+		numSize: 1,
+		intros: [],
+
+		created: function() {
+			intros: [];
+		},
+
+		domReady: function() {
+			this.numSize = this.intros.length;
+		},
+
+		onNext: function() {			
+			var childrenSize = this.$.cp.children.length;						
+			if(this.$.cp.selected+1 == this.numSize) {
+				this.fire('finish-next');								
+				return;
+			}
+
+			this.$.cp.selected = (this.$.cp.selected + 1) % childrenSize;			
+			this.curIdx = this.$.cp.selected;
+
+			if(this.$.cp.selected+1 == this.numSize){				
+				this.$.btn_next.innerHTML = "Let's play";
+			}			
+		}
+	});
+</script>
+<script src="data.js"></script>
+</polymer-element>
